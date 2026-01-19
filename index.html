@@ -2,20 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cyber Security Company</title>
+  <title>CSRG SOC Monitor</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Cyber Security Research Group</h1>
-    <p>Independent analysis. Threat intelligence. Public awareness.</p>
-  </header>
 
-  <section id="news">
-    <h2>Latest Cyber Crime News</h2>
-    <ul id="news-list"></ul>
+<header class="header">
+  <div class="title">CSRG :: SECURITY OPERATIONS MONITOR</div>
+  <div class="status">STATUS: ACTIVE</div>
+</header>
+
+<main class="container">
+  <section class="panel overview">
+    <h2>OVERVIEW</h2>
+    <p>
+      Independent cyber crime monitoring and threat intelligence.
+      Public reporting only. No commercial services.
+    </p>
   </section>
 
-  <script src="script.js"></script>
+  <section class="panel feed">
+    <h2>LIVE THREAT FEED</h2>
+    <ul id="news-list">
+      <li class="loading">[ INIT ] Loading feed…</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>CSRG © 2026</span>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
