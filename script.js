@@ -1,46 +1,35 @@
-const RSS_URL =
-  "https://feeds.feedburner.com/TheHackersNews";
-const PROXY =
-  "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
+const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
+const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
 
 fetch(PROXY)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Network error");
-    }
-    return response.text();
-  })
+  .then(r => r.text())
   .then(xmlText => {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, "application/xml");
-
+    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
     const items = xml.querySelectorAll("item");
     const list = document.getElementById("news-list");
 
     list.innerHTML = "";
 
-    items.forEach((item, index) => {
-      if (index >= 5) return;
+    items.forEach((item, i) => {
+      if (i >= 8) return;
 
       const title = item.querySelector("title")?.textContent;
       const link = item.querySelector("link")?.textContent;
+      const date = item.querySelector("pubDate")?.textContent;
 
       if (!title || !link) return;
 
       const li = document.createElement("li");
-      const a = document.createElement("a");
-
-      a.href = link;
-      a.textContent = title;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-
-      li.appendChild(a);
+      li.innerHTML = `
+        <a href="${link}" target="_blank" rel="noopener noreferrer">
+          [ ALERT ] ${title}
+        </a>
+        <span class="timestamp">${date}</span>
+      `;
       list.appendChild(li);
     });
   })
-  .catch(err => {
+  .catch(() => {
     document.getElementById("news-list").innerHTML =
-      "<li>News feed unavailable.</li>";
-    console.error(err);
+      "<li>[ ERROR ] Feed unavailable</li>";
   });
