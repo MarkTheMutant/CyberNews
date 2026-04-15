@@ -1,40 +1,33 @@
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
-const PROXY = "https://cors.isomorphic-git.org/" + RSS_URL;
+const API =
+  "https://api.rss2json.com/v1/api.json?rss_url=" +
+  encodeURIComponent(RSS_URL);
+
 const REFRESH_INTERVAL = 5 * 60 * 1000;
 
 async function loadFeed() {
   try {
-    const response = await fetch(PROXY);
-    const xmlText = await response.text();
-
-    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
-    const items = xml.querySelectorAll("item");
+    const res = await fetch(API);
+    const data = await res.json();
 
     const list = document.getElementById("news-list");
     list.innerHTML = "";
 
-    items.forEach((item, i) => {
-      if (i >= 8) return;
-
-      const title = item.querySelector("title")?.textContent;
-      const link = item.querySelector("link")?.textContent;
-      const date = item.querySelector("pubDate")?.textContent;
-
-      if (!title || !link) return;
-
+    data.items.slice(0, 8).forEach(item => {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <a href="${link}" target="_blank" rel="noopener noreferrer">
-          [ ALERT ] ${title}
+        <a href="${item.link}" target="_blank" rel="noopener noreferrer">
+          [ ALERT ] ${item.title}
         </a>
-        <span class="timestamp">${date}</span>
+        <span class="timestamp">${item.pubDate}</span>
       `;
 
       list.appendChild(li);
     });
 
   } catch (err) {
+    console.log(err);
     document.getElementById("news-list").innerHTML =
       "<li>[ ERROR ] Feed unavailable</li>";
   }
