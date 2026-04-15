@@ -1,49 +1,43 @@
-async function loadFeed() {
-    const response = await fetch(PROXY);
-    const xmlText = await response.text();
-  
-    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
-    const items = xml.querySelectorAll("item");
-  }
-
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
 const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
-const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const REFRESH_INTERVAL = 5 * 60 * 1000;
 
-function loadFeed() {
-  fetch(PROXY)
-    .then(r => r.text())
-    .then(xmlText => {
-      const xml = new DOMParser().parseFromString(xmlText, "application/xml");
-      const items = xml.querySelectorAll("item");
-      const list = document.getElementById("news-list");
+async function loadFeed() {
+  try {
+    const response = await fetch(PROXY);
+    const xmlText = await response.text();
 
-      list.innerHTML = "";
+    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
+    const items = xml.querySelectorAll("item");
 
-      items.forEach((item, i) => {
-        if (i >= 8) return;
+    const list = document.getElementById("news-list");
+    list.innerHTML = "";
 
-        const title = item.querySelector("title")?.textContent;
-        const link = item.querySelector("link")?.textContent;
-        const date = item.querySelector("pubDate")?.textContent;
+    items.forEach((item, i) => {
+      if (i >= 8) return;
 
-        if (!title || !link) return;
+      const title = item.querySelector("title")?.textContent;
+      const link = item.querySelector("link")?.textContent;
+      const date = item.querySelector("pubDate")?.textContent;
 
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <a href="${link}" target="_blank" rel="noopener noreferrer">
-            [ ALERT ] ${title}
-          </a>
-          <span class="timestamp">${date}</span>
-        `;
+      if (!title || !link) return;
 
-        list.appendChild(li);
-      });
-    })
-    .catch(() => {
-      document.getElementById("news-list").innerHTML =
-        "<li>[ ERROR ] Feed unavailable</li>";
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <a href="${link}" target="_blank" rel="noopener noreferrer">
+          [ ALERT ] ${title}
+        </a>
+        <span class="timestamp">${date}</span>
+      `;
+
+      list.appendChild(li);
     });
+
+  } catch (err) {
+    document.getElementById("news-list").innerHTML =
+      "<li>[ ERROR ] Feed unavailable</li>";
+  }
 }
 
 loadFeed();
