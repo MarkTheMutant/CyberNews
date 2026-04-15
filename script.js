@@ -1,6 +1,10 @@
 async function loadFeed() {
-    const response = await(proxy);
-    const xmltext = await response.data.text ()
+    const response = await fetch(PROXY);
+    const xmlText = await response.text();
+  
+    const xml = new DOMParser().parseFromString(xmlText, "application/xml");
+    const items = xml.querySelectorAll("item");
+  }
 
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
 const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
