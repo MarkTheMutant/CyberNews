@@ -1,36 +1,43 @@
+
+
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
-const API =
-  "https://api.rss2json.com/v1/api.json?rss_url=" +
-  encodeURIComponent(RSS_URL);
+const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
+const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
-const REFRESH_INTERVAL = 5 * 60 * 1000;
+function loadFeed() {
+  fetch(PROXY)
+    .then(r => r.text())
+    .then(xmlText => {
+      const xml = new DOMParser().parseFromString(xmlText, "application/xml");
+      const items = xml.querySelectorAll("item");
+      const list = document.getElementById("news-list");
 
-async function loadFeed() {
-  try {
-    const res = await fetch(API);
-    const data = await res.json();
+      list.innerHTML = "";
 
-    const list = document.getElementById("news-list");
-    list.innerHTML = "";
+      items.forEach((item, i) => {
+        if (i >= 8) return;
 
-    data.items.slice(0, 8).forEach(item => {
-      const li = document.createElement("li");
+        const title = item.querySelector("title")?.textContent;
+        const link = item.querySelector("link")?.textContent;
+        const date = item.querySelector("pubDate")?.textContent;
 
-      li.innerHTML = `
-        <a href="${item.link}" target="_blank" rel="noopener noreferrer">
-          [ ALERT ] ${item.title}
-        </a>
-        <span class="timestamp">${item.pubDate}</span>
-      `;
+        if (!title || !link) return;
 
-      list.appendChild(li);
+        const li = document.createElement("li");
+        li.innerHTML = 
+          <a href="${link}" target="_blank" rel="noopener noreferrer">
+            [ ALERT ] ${title}
+          </a>
+          <span class="timestamp">${date}</span>
+        ;
+
+        list.appendChild(li);
+      });
+    })
+    .catch(() => {
+      document.getElementById("news-list").innerHTML =
+        "<li>[ ERROR ] Feed unavailable</li>";
     });
-
-  } catch (err) {
-    console.log(err);
-    document.getElementById("news-list").innerHTML =
-      "<li>[ ERROR ] Feed unavailable</li>";
-  }
 }
 
 loadFeed();
