@@ -1,3 +1,7 @@
+async function loadFeed() {
+    const response = await(proxy);
+    const xmltext = await response.data.text ()
+
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
 const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
 const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
