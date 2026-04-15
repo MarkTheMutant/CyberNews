@@ -1,5 +1,5 @@
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
-const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
+const PROXY = "https://cors.isomorphic-git.org/" + RSS_URL;
 const REFRESH_INTERVAL = 5 * 60 * 1000;
 
 async function loadFeed() {
