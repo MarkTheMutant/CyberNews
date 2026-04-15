@@ -1,8 +1,6 @@
-
-
 const RSS_URL = "https://feeds.feedburner.com/TheHackersNews";
 const PROXY = "https://api.allorigins.win/raw?url=" + encodeURIComponent(RSS_URL);
-const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const REFRESH_INTERVAL = 5 * 60 * 1000;
 
 function loadFeed() {
   fetch(PROXY)
@@ -24,12 +22,13 @@ function loadFeed() {
         if (!title || !link) return;
 
         const li = document.createElement("li");
-        li.innerHTML = 
+
+        li.innerHTML = `
           <a href="${link}" target="_blank" rel="noopener noreferrer">
             [ ALERT ] ${title}
           </a>
           <span class="timestamp">${date}</span>
-        ;
+        `;
 
         list.appendChild(li);
       });
